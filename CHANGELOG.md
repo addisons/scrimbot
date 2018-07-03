@@ -1,10 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## v0.1.2 ~ 2018.07.04
+### v0.1.3 ~ 2018.07.04
+* Adjusted internal response when joining new server.
+* Minor changelog formatting adjustment.
+
+### v0.1.2 ~ 2018.07.04
 * Fixed internal response when joining new server.
 
-## v0.1.1 ~ 2018.07.03
+### v0.1.1 ~ 2018.07.03
 * Fixed minor changelog formatting issue.
 * Removed valid channel functionality.
 

@@ -26,7 +26,7 @@ const activity = "Made by multi ~ " + config.version;
 const modes = ['ultiduo', '4s', '6s', 'prolander', 'highlander'];
 
 client.on("ready", () => {
-    console.log('Bot has started.');
+    console.log('Bot ready. Running on ' + client.guilds.size + ' servers.');
     client.user.setActivity(activity);
 });
 
