@@ -31,7 +31,7 @@ client.on("ready", () => {
 });
 
 client.on("guildCreate", guild => {
-    console.log('New guild joined: ${guild.name}');
+    console.log(`New guild joined: ${guild.name}`);
 });
 
 client.on("guildDelete", guild => {
@@ -327,4 +327,4 @@ client.on("message", async message => {
     else message.channel.send("Unknown command, try '~commands' for some help!");
 });
 
-client.login(config.token);
+client.login(config.maintoken);
