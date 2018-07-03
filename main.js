@@ -9,10 +9,6 @@ const Scrim = require("./classes/scrim.js");
 
 const md = require("./js/markdown");
 const NL = '\n';
-
-const YES = '✅';
-const NO = '❌';
-
 const ROLES = ["scout1", "scout2", "pocket", "roamer", "demoman", "medic"];
 
 var mongoose = require("mongoose");
@@ -24,8 +20,6 @@ mongoose.connect(encodeURI(config.mongoURI)).then(
 
 const Roster = require("./models/roster");
 const ScrimDB = require("./models/scrim");
-
-// const models = require("./models");
 
 const activity = "Made by multi ~ " + config.version;
 const valid = ["scrims", "general"];
@@ -259,20 +253,6 @@ client.on("message", async message => {
         return;
     }
 
-    else if (command === "time") {
-        // var birthday = new Date(Date.now());
-        // var date1 = birthday.toString();
-        //
-        // console.log(date1);
-        // console.log(birthday.getTimezoneOffset());
-
-        var test = DateTime.fromFormat("2018-07-03T20:00 Australia/Adelaide", "yyyy-MM-dd'T'HH:mm z");
-        // var test = DateTime.fromFormat("July 3, 2018 at 20:00 UTC+7", "LLLL d, yyyy 'at' H:m z");
-        console.log(test.toString());
-
-        return;
-    }
-
     else if (command === "commands") {
         if (args.length === 0) {
             message.channel.send({embed: {
@@ -348,89 +328,7 @@ client.on("message", async message => {
         return;
     }
 
-    else if (command === "clear") {
-        message.channel.bulkDelete(100);
-        return;
-    }
-
     else message.channel.send("Unknown command, try '~commands' for some help!");
 });
-
-client.on('messageReactionAdd', (reaction, user) => {
-    var message = reaction.message;
-    // console.log(message.guild.members.get(message.author.id).roles.exists('name','Core'));
-
-    message.channel.fetchMessage(message.id).then(messagea => {
-        rows = messagea.embeds[0].fields[0].value.split('\n');
-
-        var i = 0;
-
-        while (i < rows.length) {
-            if (!rows[i].includes(':')) {
-                rows.splice(i, 1);
-                continue;
-            }
-
-            i++;
-        }
-
-        rows.splice(0, 1);
-
-        for (row in rows) {
-            rows[row] = rows[row].split(": ");
-        }
-
-        console.log(messagea);
-
-        embed = {embed: {
-            fields: [{
-                name: 'Matches',
-                value: '**Scrim against Mad Dogz**' +
-                '\nMon 2nd of July' +
-                '\n8:00pm - 9:00pm' +
-                '\n\nScout: **sheep**' +
-                '\nScout: **antwa?**' +
-                '\nPocket: **yuki**' +
-                '\nRoamer: *aporia?*' +
-                '\nDemoman: *termo?*' +
-                '\nMedic: *bonobo?*'
-            }]
-        }};
-
-        messagea.edit(embed);
-        messagea.clearReactions();
-
-        if (reaction.emoji.name === YES) {
-            rows[1][1] = '*' + rows[1][1] + '*';
-        }
-
-        else if (reaction.emoji.name === NO) {
-            messagea.edit("You reacted no.");
-        }
-
-        else {
-            messagea.edit(`I don't know what ${reaction.emoji.name} is.`)
-        }
-    });
-
-    // console.log(message.content);
-
-    // users = Array.from(reaction.users.values());
-    //
-    // for (var i = 0; i < users.length; i++) {
-    //     console.log(users[i]);
-    // }
-});
-
-// client.on('messageReactionAdd', (reaction, user) => {
-//
-//     if(reaction.emoji.name === ":white_check_mark:") {
-//         console.log(reaction.users);
-//     }
-//     else
-//     {
-//         console.log(reaction.emoji.name);
-//     }
-// });
 
 client.login(config.token);
