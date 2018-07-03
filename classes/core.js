@@ -34,12 +34,12 @@ class Core {
         return {
             embed: {
                 description: md.u("Core Roster") + NL + NL
-                + 'Scout1: ' + this.scout1 + NL
-                + 'Scout2: ' + this.scout2 + NL
-                + 'Pocket: ' + this.pocket + NL
-                + 'Roamer: ' + this.roamer + NL
-                + 'Demoman: ' + this.demoman + NL
-                + 'Medic: ' + this.medic
+                + 'Scout1: ' + this.scout1.name + NL
+                + 'Scout2: ' + this.scout2.name + NL
+                + 'Pocket: ' + this.pocket.name + NL
+                + 'Roamer: ' + this.roamer.name + NL
+                + 'Demoman: ' + this.demoman.name + NL
+                + 'Medic: ' + this.medic.name
             }
         };
     }

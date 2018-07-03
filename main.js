@@ -38,9 +38,12 @@ client.on("guildDelete", guild => {
     console.log(`Removed from guild: ${guild.name}`);
 });
 
-function getID(argument) {
-    var id = argument.slice(2, argument.length - 1);
-    return client.users.get(id).username;
+function cleanID(rawid) {
+    return rawid.slice(2, rawid.length - 1);
+}
+
+function getNameFromID(rawid) {
+    return client.users.get(cleanID(rawid)).username;
 }
 
 client.on("message", async message => {
@@ -92,12 +95,30 @@ client.on("message", async message => {
         }
 
         const roster = {
-            scout1: getID(args[0]),
-            scout2: getID(args[1]),
-            pocket: getID(args[2]),
-            roamer: getID(args[3]),
-            demoman: getID(args[4]),
-            medic: getID(args[5])
+            scout1: {
+                id: cleanID(args[0]),
+                name: getNameFromID(args[0])
+            },
+            scout2: {
+                id: cleanID(args[1]),
+                name: getNameFromID(args[1])
+            },
+            pocket: {
+                id: cleanID(args[2]),
+                name: getNameFromID(args[2])
+            },
+            roamer: {
+                id: cleanID(args[3]),
+                name: getNameFromID(args[3])
+            },
+            demoman: {
+                id: cleanID(args[4]),
+                name: getNameFromID(args[4])
+            },
+            medic: {
+                id: cleanID(args[5]),
+                name: getNameFromID(args[5])
+            }
         };
 
         Roster.count(search, function(err, count) {
@@ -138,7 +159,7 @@ client.on("message", async message => {
             return;
         }
 
-        const player = getID(args[1]);
+        const player = getNameFromID(args[1]);
 
         Roster.count(search, function(err, count) {
             if (count > 0) {
@@ -255,7 +276,7 @@ client.on("message", async message => {
                 color: config.embedColour,
                 title: "Commands",
                 description: md.b("Note:") + " All functionality is in development phases." + NL
-                    + "Please report any bugs or issues to " + config.multiID + ".",
+                    + "To report a bug, join https://discord.gg/FBTrRnz.",
                 fields: [{
                     name: "~commands core",
                     value: "Functions related to your core roster."
