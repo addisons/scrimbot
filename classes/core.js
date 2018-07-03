@@ -1,5 +1,4 @@
 const md = require("../js/markdown");
-
 const NL = '\n';
 
 class Core {

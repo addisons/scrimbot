@@ -1,5 +1,4 @@
 const md = require("../js/markdown");
-
 const NL = '\n';
 
 class Scrim {
@@ -46,7 +45,7 @@ class Scrim {
 
     toFieldShort() {
         return {
-            name: b(this.title),
+            name: this.title,
             value: this.date + ' ' + this.time
         };
     }
@@ -54,7 +53,7 @@ class Scrim {
     toString() {
         return {
             embed: {
-                description: b(this.title) + NL
+                description: md.b(this.title) + NL
                 + this.date + NL
                 + this.time + NL + NL
                 + 'Scout: ' + md.i(this.scout1) + NL
@@ -73,7 +72,7 @@ class Scrim {
     toStrShort() {
         return {
             embed: {
-                description: b(this.title) + NL
+                description: md.b(this.title) + NL
                 + this.date + ' ' + this.time
             }
         };

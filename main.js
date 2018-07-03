@@ -7,6 +7,9 @@ const config = require("./config.json");
 const Core = require("./classes/core.js");
 const Scrim = require("./classes/scrim.js");
 
+const md = require("./js/markdown");
+const NL = '\n';
+
 const YES = '✅';
 const NO = '❌';
 
@@ -24,7 +27,7 @@ const ScrimDB = require("./models/scrim");
 
 // const models = require("./models");
 
-const activity = "Made by multi ~ dev version";
+const activity = "Made by multi ~ " + config.version;
 const valid = ["scrims", "general"];
 
 const modes = ['ultiduo', '4s', '6s', 'prolander', 'highlander'];
@@ -41,19 +44,6 @@ client.on("guildCreate", guild => {
 client.on("guildDelete", guild => {
     console.log(`Removed from guild: ${guild.name}`);
 });
-
-// let scrim = new Scrim({
-//     type: 'Scrim',
-//     date: 'Monday 2nd of June',
-//     time: '8:00pm - 9:00pm',
-//     opponent: 'Mad Dogz',
-//     scout1: 'multi',
-//     scout2: 'signed',
-//     pocket: 'kpc',
-//     roamer: 'keller',
-//     demoman: 'not signed',
-//     medic: 'Left'
-// });
 
 function getID(argument) {
     var id = argument.slice(2, argument.length - 1);
@@ -76,9 +66,6 @@ client.on("message", async message => {
 
     const search = {serverid: message.guild.id};
 
-    // ~setupcore @multi @multi @ScrimBotDev @ScrimBotDev @ScrimBotDev @multi
-
-
     if (command === "clearall") {
         Roster.findOneAndRemove(search, function(err) {
             if (err) return handleError(err);
@@ -89,6 +76,8 @@ client.on("message", async message => {
         });
 
         message.channel.send("Cleared successfully.");
+
+        return;
     }
 
     // ######################### //
@@ -96,22 +85,23 @@ client.on("message", async message => {
     // ######################### //
 
     // Clears the database entry
-    if (command === "clearcore") {
+    else if (command === "clearcore") {
         Roster.findOneAndRemove(search, function(err) {
             if (err) return handleError(err);
         });
         message.channel.send("Cleared successfully.");
+
+        return;
     }
 
     // Sets up the database entry
-    if (command === "setupcore") {
+    else if (command === "setcore") {
         if (args.length !== 6) {
-            message.channel.send("Usage:");
-            message.channel.send("~setupcore @scout1 @scout2 @pocket @roamer @demoman @medic");
+            message.channel.send("Try '~commands core' for how to use this function.");
             return;
         }
 
-        var roster = {
+        const roster = {
             scout1: getID(args[0]),
             scout2: getID(args[1]),
             pocket: getID(args[2]),
@@ -140,44 +130,47 @@ client.on("message", async message => {
                 });
             }
         });
+
+        return;
     }
 
     // Adjusts a role
-    if (command === "adjustcore" || command === "coreadjust") {
+    else if (command === "adjustcore") {
         if (args.length !== 2) {
-            message.channel.send("Incorrect input.");
+            message.channel.send("Try '~commands core' for how to use this function.");
+            return;
         }
 
-        else {
-            var role = args[0];
+        const role = args[0];
 
-            if (ROLES.indexOf(role) === -1) {
-                message.channel.send("Role does not exist.");
-                return;
+        if (ROLES.indexOf(role) === -1) {
+            message.channel.send("Role does not exist.");
+            return;
+        }
+
+        const player = getID(args[1]);
+
+        Roster.count(search, function(err, count) {
+            if (count > 0) {
+                field = "core." + role;
+
+                Roster.update(search, {
+                   [field] : player
+                }, function(err) {
+                    if (err) return handleError(err);
+                    else message.channel.send("Core roster updated.");
+                });
             }
 
-            var player = getID(args[1]);
+            else message.channel.send("Your core roster has not been setup.");
 
-            Roster.count(search, function(err, count) {
-                if (count > 0) {
-                    field = "core." + role;
+        });
 
-                    Roster.update(search, {
-                       [field] : player
-                    }, function(err) {
-                        if (err) return handleError(err);
-                        else message.channel.send("Core roster updated.");
-                    });
-                }
-
-                else message.channel.send("Your core roster has not been setup.");
-
-            });
-        }
+        return;
     }
 
     // Returns the core roster
-    if (command === "core") {
+    else if (command === "core") {
 
         Roster.count(search, function(err, count) {
            if (count > 0) {
@@ -192,6 +185,8 @@ client.on("message", async message => {
            }
         });
 
+        return;
+
     }
 
     // ################### //
@@ -200,16 +195,20 @@ client.on("message", async message => {
 
 
     // Clears the database entry
-    if (command === "clearscrims") {
+    else if (command === "clearscrims") {
         ScrimDB.remove(search, function(err) {
             if (err) return handleError(err);
         });
+
         message.channel.send("Cleared successfully.");
+
+        return;
     }
 
     // Usage: ~setscrim [date] [time] [opponent]
-    if (command === "setscrim") {
+    else if (command === "setscrim") {
         if (args.length < 3) {
+            message.channel.send("Try '~commands scrim' for how to use this function.");
             return;
         }
 
@@ -237,16 +236,16 @@ client.on("message", async message => {
                 return;
             }
         });
+
+        return;
     }
 
-    if (command === "scrims") {
+    else if (command === "scrims") {
         ScrimDB.find(search, function(err, docs) {
             if (docs.length === 0) {
                 message.channel.send("You have no scrims.");
                 return;
-            }
-
-            // console.log(docs);
+            };
 
             fields = [];
 
@@ -255,12 +254,12 @@ client.on("message", async message => {
             }
 
             message.channel.send({embed: {fields: fields}});
-
-            // message.channel.send(docs);
         });
+
+        return;
     }
 
-    if (command === "time") {
+    else if (command === "time") {
         // var birthday = new Date(Date.now());
         // var date1 = birthday.toString();
         //
@@ -270,40 +269,91 @@ client.on("message", async message => {
         var test = DateTime.fromFormat("2018-07-03T20:00 Australia/Adelaide", "yyyy-MM-dd'T'HH:mm z");
         // var test = DateTime.fromFormat("July 3, 2018 at 20:00 UTC+7", "LLLL d, yyyy 'at' H:m z");
         console.log(test.toString());
+
+        return;
     }
 
-    if (command === "mode") {
+    else if (command === "commands") {
+        if (args.length === 0) {
+            message.channel.send({embed: {
+                color: config.embedColour,
+                title: "Commands",
+                description: md.b("Note:") + " All functionality is in development phases." + NL
+                    + "Please report any bugs or issues to " + config.multiID + ".",
+                fields: [{
+                    name: "~commands core",
+                    value: "Functions related to your core roster."
+                }, {
+                    name: "~commands general",
+                    value: "General functions."
+                }, {
+                    name: "~commands scrims",
+                    value: "Functions related to scrims."
+                }]
 
-        if (args.length > 0) {
-            if (modes.indexOf(args[0]) !== -1) {
-                sett.mode = args[0];
-                message.channel.send(`Mode set to ${sett.mode}.`);
-            }
+            }});
 
-            else if (args[0] === "reset") {
-                sett.mode = null;
-                message.channel.send("Mode reset.");
-            }
+            return;
+        }
 
-            else {
-                message.channel.send("Invalid mode.");
-            }
+        if (args[0] === "core") {
+            message.channel.send({embed: {
+                color: config.embedColour,
+                title: "Commands - Core Roster",
+                description: md.i(md.b("~adjustcore") + " role @player") + NL
+                    + 'Allows you to change a player in your roster.' + NL + NL
+                    + 'Example: ' + md.i("~adjustcore demoman @termo") + NL + NL
+
+                    + md.i(md.b("~clearcore")) + NL
+                    + "Clears your core roster." + NL + NL
+
+                    + md.i(md.b("~core")) + NL
+                    + "Prints out the core roster." + NL + NL
+
+                    + md.i(md.b("~setupcore") + " @scout1 @scout2 @pocket @roamer @demoman @medic") + NL
+                    + 'Allows you to setup your core team using Discord mentions.' + NL + NL
+                    + 'Example: ' + md.i("~setupcore @sheep @antwa @yuki @aporia @bulk @bonobo")
+            }});
+        }
+
+        else if (args[0] === "general") {
+            message.channel.send({embed: {
+                color: config.embedColour,
+                title: "Commands - General",
+                description: md.i(md.b("~clearall")) + NL
+                + "Clears both the roster and all scrims."
+            }});
+        }
+
+        else if (args[0] === "scrims") {
+            message.channel.send({embed: {
+                color: config.embedColour,
+                title: "Commands - Scrims",
+                description: md.i(md.b("~clearscrims")) + NL
+                + "Clears all scrims." + NL + NL
+
+                + md.i(md.b("~setscrim") + " date time opponent") + NL
+                + 'Allows you to setup a scrim.' + NL + NL
+                + 'Example: ' + md.i("~setscrim Thursday 8pm Mad Dogz") + NL + NL
+
+                + md.i(md.b("~scrims")) + NL
+                + "Prints out all the scrims."
+            }});
         }
 
         else {
-            if (sett.mode !== null) {
-                message.channel.send(`The current mode is ${sett.mode}.`);
-            }
-
-            else {
-                message.channel.send(`No mode set.`);
-            }
+            message.channel.send("Command set not found.")
         }
+
+        return;
     }
 
-    if (command === "clear") {
+    else if (command === "clear") {
         message.channel.bulkDelete(100);
+        return;
     }
+
+    else message.channel.send("Unknown command, try '~commands' for some help!");
 });
 
 client.on('messageReactionAdd', (reaction, user) => {
