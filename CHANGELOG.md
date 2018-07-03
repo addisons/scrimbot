@@ -1,10 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## v0.1.1 ~ 2018.07.03
+* Fixed minor changelog formatting issue.
+* Removed valid channel functionality.
+
 ## v0.1.0 ~ 2018.07.03
 ### Added:
 ##### General
-* *~clearall~ : Clears both the roster and all scrims.
+* *~clearall* : Clears both the roster and all scrims.
 * *~commands* : Gives information about how to use each function.
 
 ##### Rosters

@@ -22,7 +22,6 @@ const Roster = require("./models/roster");
 const ScrimDB = require("./models/scrim");
 
 const activity = "Made by multi ~ " + config.version;
-const valid = ["scrims", "general"];
 
 const modes = ['ultiduo', '4s', '6s', 'prolander', 'highlander'];
 
@@ -50,9 +49,6 @@ client.on("message", async message => {
 
     // Ignore messages without prefix
     if (message.content[0] !== config.prefix) return;
-
-    // Ignore messages in invalid channels
-    if (valid.indexOf(message.channel.name) === -1) return;
 
     // Process input into a command
     const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
