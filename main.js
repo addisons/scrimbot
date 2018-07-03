@@ -14,7 +14,7 @@ const ROLES = ["scout1", "scout2", "pocket", "roamer", "demoman", "medic"];
 var mongoose = require("mongoose");
 
 mongoose.connect(encodeURI(config.mongoURI)).then(
-    () => {console.log("Connected.")},
+    () => {console.log("Connected to database.")},
     err => {console.log('err', err);}
 );
 
@@ -297,7 +297,10 @@ client.on("message", async message => {
                 color: config.embedColour,
                 title: "Commands - General",
                 description: md.i(md.b("~clearall")) + NL
-                + "Clears both the roster and all scrims."
+                + "Clears both the roster and all scrims." + NL + NL
+
+                + md.i(md.b("~version")) + NL
+                + "Shows the current release version."
             }});
         }
 
@@ -321,6 +324,11 @@ client.on("message", async message => {
             message.channel.send("Command set not found.")
         }
 
+        return;
+    }
+
+    else if (command === "version") {
+        message.channel.send("This bot is currently running " + md.b(config.version) + ".");
         return;
     }
 
