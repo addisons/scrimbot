@@ -1,18 +1,4 @@
-function b(s) {
-    return "**" + s + "**";
-}
-
-function i(s) {
-    return "*" + s + "*";
-}
-
-function s(s) {
-    return "~~" + s + "~~";
-}
-
-function u(s) {
-    return "__" + s + "__";
-}
+const md = require("../js/markdown");
 
 const NL = '\n';
 
@@ -48,7 +34,7 @@ class Core {
     toString() {
         return {
             embed: {
-                description: u("Core Roster") + NL + NL
+                description: md.u("Core Roster") + NL + NL
                 + 'Scout1: ' + this.scout1 + NL
                 + 'Scout2: ' + this.scout2 + NL
                 + 'Pocket: ' + this.pocket + NL

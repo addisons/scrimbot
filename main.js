@@ -300,7 +300,7 @@ client.on("message", async message => {
             }
         }
     }
-    
+
     if (command === "clear") {
         message.channel.bulkDelete(100);
     }

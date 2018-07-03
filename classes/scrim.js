@@ -1,18 +1,4 @@
-function b(s) {
-    return "**" + s + "**";
-}
-
-function i(s) {
-    return "*" + s + "*";
-}
-
-function s(s) {
-    return "~~" + s + "~~";
-}
-
-function u(s) {
-    return "__" + s + "__";
-}
+const md = require("../js/markdown");
 
 const NL = '\n';
 
@@ -47,14 +33,14 @@ class Scrim {
 
     toField() {
         return {
-            name: b(this.title),
+            name: this.title,
             value: this.date + + ' ' + this.time + NL + NL
-            + 'Scout: ' + b(this.scout1) + NL
-            + 'Scout: ' + i(this.scout2) + NL
-            + 'Pocket: ' + i(this.pocket) + NL
-            + 'Roamer: ' + i(this.roamer) + NL
-            + 'Demoman: ' + i(this.demoman) + NL
-            + 'Medic: ' + i(this.medic)
+            + 'Scout: ' + md.i(this.scout1) + NL
+            + 'Scout: ' + md.i(this.scout2) + NL
+            + 'Pocket: ' + md.i(this.pocket) + NL
+            + 'Roamer: ' + md.i(this.roamer) + NL
+            + 'Demoman: ' + md.i(this.demoman) + NL
+            + 'Medic: ' + md.i(this.medic)
         };
     }
 
@@ -71,12 +57,12 @@ class Scrim {
                 description: b(this.title) + NL
                 + this.date + NL
                 + this.time + NL + NL
-                + 'Scout: ' + b(this.scout1) + NL
-                + 'Scout: ' + i(this.scout2) + NL
-                + 'Pocket: ' + i(this.pocket) + NL
-                + 'Roamer: ' + i(this.roamer) + NL
-                + 'Demoman: ' + i(this.demoman) + NL
-                + 'Medic: ' + i(this.medic),
+                + 'Scout: ' + md.i(this.scout1) + NL
+                + 'Scout: ' + md.i(this.scout2) + NL
+                + 'Pocket: ' + md.i(this.pocket) + NL
+                + 'Roamer: ' + md.i(this.roamer) + NL
+                + 'Demoman: ' + md.i(this.demoman) + NL
+                + 'Medic: ' + md.i(this.medic),
                 footer: {
                     text: "Unsure what all this means? Type '~help scrim' to find out more."
                 }
