@@ -1,4 +1,5 @@
 const { DateTime } = require("luxon");
+const fs = require("fs");
 
 const discord = require("discord.js");
 const client = new discord.Client();
@@ -11,7 +12,7 @@ const md = require("./js/markdown");
 const NL = '\n';
 const ROLES = ["scout1", "scout2", "pocket", "roamer", "demoman", "medic"];
 
-var mongoose = require("mongoose");
+const mongoose = require("mongoose");
 
 mongoose.connect(encodeURI(config.mongoURI)).then(
     () => {console.log("Connected to database.")},
@@ -264,7 +265,38 @@ client.on("message", async message => {
                 fields.push((new Scrim(docs[i])).getFieldShort);
             }
 
-            message.channel.send({embed: {fields: fields}});
+            message.channel.send({embed: {
+                color: config.embedColour,
+                fields: fields
+            }});
+        });
+
+        return;
+    }
+
+    else if (command === "myscrims") {
+        ScrimDB.find(search, function(err, docs) {
+            if (docs.length === 0) {
+                message.channel.send("You have no scrims.");
+                return;
+            };
+
+            fields = [];
+
+            for (var i = 0; i < docs.length; i++) {
+                for (key in docs[i].roster) {
+                    if (docs[i].roster[key].id === message.author.id) {
+                        fields.push((new Scrim(docs[i])).getFieldShort);
+                    }
+
+                    break;
+                }
+            }
+
+            message.channel.send({embed: {
+                color: config.embedColour,
+                fields: fields}
+            });
         });
 
         return;
@@ -320,8 +352,13 @@ client.on("message", async message => {
                 description: md.i(md.b("~clearall")) + NL
                 + "Clears both the roster and all scrims." + NL + NL
 
-                + md.i(md.b("~version")) + NL
-                + "Shows the current release version."
+                + md.i(md.b("~version") + " (major|minor)") + NL
+                + "Gets the raw changelog for the latest major/minor release version." + NL + NL
+                + "Example: " + md.i("~version major") + NL + NL
+
+                + md.i(md.b("~version") + " versionid") + NL
+                + "Gets the raw changelog for a particular release version." + NL + NL
+                + "Example: " + md.i("~version v0.1.6")
             }});
         }
 
@@ -349,7 +386,69 @@ client.on("message", async message => {
     }
 
     else if (command === "version") {
-        message.channel.send("This bot is currently running " + md.b(config.version) + ".");
+        if (args.length !== 1) {
+            message.channel.send("Try '~commands general' for how to use this function.");
+            return;
+        }
+
+        const inp = args[0];
+
+        if (inp !== "major" && inp !== "minor" && !/^v([0-9]{1,2}).([0-9]{1,2}).([0-9]{1,2})$/.test(inp)) {
+            message.channel.send("Try '~commands general' for how to use this function.");
+            return;
+        }
+
+        fs.readFile("CHANGELOG.md", function(err, data) {
+            if (err) throw err;
+            else {
+                const changelog = data.toString().split('\n');
+
+                var getPatch = false;
+                var out = '';
+
+                for (var i = 0; i < changelog.length; i++) {
+
+                    if (getPatch)  {
+                        if (changelog[i] !== '') {
+                            out += changelog[i] + NL;
+                        }
+
+                        else break;
+                    }
+
+                    else {
+                        switch (inp) {
+                            case "major":
+                                if (changelog[i].indexOf("## v") !== -1) {
+                                    out += changelog[i] + NL;
+                                    getPatch = true;
+                                }
+
+                                break;
+
+                            case "minor":
+                                if (changelog[i].indexOf("#### v") !== -1) {
+                                    out += changelog[i] + NL;
+                                    getPatch = true;
+                                }
+
+                                break;
+
+                            default:
+                                if (changelog[i].indexOf("## " + inp) !== -1) {
+                                    out += changelog[i] + NL;
+                                    getPatch = true;
+                                }
+                        }
+
+                    }
+                }
+
+                if (!out) message.channel.send("Patch not found.");
+                else message.channel.send(out);
+            }
+        });
+
         return;
     }
 
