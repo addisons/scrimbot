@@ -160,14 +160,19 @@ client.on("message", async message => {
             return;
         }
 
-        const player = getNameFromID(args[1]);
 
-        Roster.count(search, function(err, count) {
+
+        const player = {
+            id: cleanID(args[1]),
+            name: getNameFromID(args[1])
+        };
+
+        RosterDB.count(search, function(err, count) {
             if (count > 0) {
                 field = "core." + role;
 
-                Roster.update(search, {
-                   [field] : player
+                RosterDB.update(search, {
+                    [field] : player
                 }, function(err) {
                     if (err) return handleError(err);
                     else message.channel.send("Core roster updated.");
