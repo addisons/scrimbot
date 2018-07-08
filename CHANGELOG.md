@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+#### v0.1.7 ~ 2018.07.08
+* Fixed *~adjustcore* not storing user ID.
+
 #### v0.1.6 ~ 2018.07.04
 ##### Added
 * *~myscrims* : View all scrims that you are a player in.
